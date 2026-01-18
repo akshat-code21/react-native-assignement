@@ -1,0 +1,138 @@
+import React, { useState, useEffect } from 'react';
+import {
+    View,
+    Text,
+    TextInput,
+    FlatList,
+    TouchableOpacity,
+    Keyboard,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { leaderboardApi } from '../services/api';
+import { SearchResultItem } from '../components/SearchResultItem';
+import { LoadingSpinner } from '../components/LoadingSpinner';
+import { LeaderboardEntry } from 'types';
+
+const DEBOUNCE_DELAY = 500; // milliseconds
+
+export const SearchScreen: React.FC = () => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [results, setResults] = useState<LeaderboardEntry[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [hasSearched, setHasSearched] = useState(false);
+
+    // Debounce search
+    useEffect(() => {
+        if (searchQuery.trim().length === 0) {
+            setResults([]);
+            setHasSearched(false);
+            return;
+        }
+
+        const timeoutId = setTimeout(() => {
+            performSearch(searchQuery.trim());
+        }, DEBOUNCE_DELAY);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchQuery]);
+
+    const performSearch = async (query: string) => {
+        if (query.length < 1) return;
+
+        setLoading(true);
+        setHasSearched(true);
+
+        try {
+            const response = await leaderboardApi.searchUsers(query, 50);
+            setResults(response.users);
+        } catch (error) {
+            console.error('Error searching users:', error);
+            setResults([]);
+            // Handle error (show toast/alert)
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleClearSearch = () => {
+        setSearchQuery('');
+        setResults([]);
+        setHasSearched(false);
+        Keyboard.dismiss();
+    };
+
+    const renderItem = ({ item }: { item: LeaderboardEntry }) => (
+        <SearchResultItem item={item} />
+    );
+
+    const renderEmpty = () => {
+        if (loading) {
+            return <LoadingSpinner message="Searching..." />;
+        }
+
+        if (hasSearched && results.length === 0) {
+            return (
+                <View className="flex-1 items-center justify-center p-8">
+                    <Text className="text-lg text-gray-600">No users found</Text>
+                    <Text className="text-sm text-gray-400 mt-2">Try a different search term</Text>
+                </View>
+            );
+        }
+
+        return (
+            <View className="flex-1 items-center justify-center p-8">
+                <Text className="text-lg text-gray-600">Search for users</Text>
+                <Text className="text-sm text-gray-400 mt-2">Enter a username to find their rank</Text>
+            </View>
+        );
+    };
+
+    return (
+        <SafeAreaView className="flex-1 bg-white">
+            <View className="bg-blue-600 px-4 py-4">
+                <Text className="text-2xl font-bold text-white">Search Users</Text>
+            </View>
+
+            <View className="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                <View className="flex-row items-center bg-white rounded-lg border border-gray-300">
+                    <TextInput
+                        className="flex-1 px-4 py-3 text-base"
+                        placeholder="Enter username..."
+                        placeholderTextColor="#9CA3AF"
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        returnKeyType="search"
+                        onSubmitEditing={() => performSearch(searchQuery)}
+                    />
+                    {searchQuery.length > 0 && (
+                        <TouchableOpacity
+                            onPress={handleClearSearch}
+                            className="px-4 py-3"
+                        >
+                            <Text className="text-blue-600 font-semibold">Clear</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+            </View>
+
+            {results.length > 0 && (
+                <View className="px-4 py-2 bg-gray-50">
+                    <Text className="text-sm text-gray-600">
+                        Found {results.length} result{results.length !== 1 ? 's' : ''}
+                    </Text>
+                </View>
+            )}
+
+            <FlatList
+                data={results}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => `${item.username}-${index}`}
+                ListEmptyComponent={renderEmpty}
+                contentContainerStyle={{ flexGrow: 1 }}
+                keyboardShouldPersistTaps="handled"
+            />
+        </SafeAreaView>
+    );
+};

@@ -62,7 +62,7 @@ export const LeaderboardScreen = () => {
         if (!hasMore) return null;
         return (
             <View className="py-4">
-                <ActivityIndicator size="small" color="#3B82F6" />
+                <ActivityIndicator size="small" color="#A9F99E" />
             </View>
         );
     };
@@ -72,17 +72,17 @@ export const LeaderboardScreen = () => {
     }
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
-            <View className="bg-blue-600 px-4 py-4">
-                <Text className="text-2xl font-bold text-white">Leaderboard</Text>
-                <Text className="text-blue-100 mt-1">Total Users: {total.toLocaleString()}</Text>
+        <SafeAreaView className="flex-1 bg-matiks-bg" >
+            <View className="bg-matiks-bg px-4 py-4 border-b border-matiks-card">
+                <Text className="text-2xl font-bold text-matiks-text font-montserrat">Leaderboard</Text>
+                <Text className="text-matiks-muted mt-1 font-montserrat">Total Users: {total.toLocaleString()}</Text>
             </View>
             <FlatList
                 data={leaderboard}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => `${item.username}-${index}`}
                 refreshControl={
-                    <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+                    <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} tintColor="#A9F99E" />
                 }
                 onEndReached={loadMore}
                 onEndReachedThreshold={0.5}

@@ -4,7 +4,19 @@ module.exports = {
 
   presets: [require('nativewind/preset')],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        matiks: {
+          bg: '#1E1E1E',
+          text: '#A9F99E',
+          card: '#2D2D2D', // Slightly lighter for contrast
+          muted: '#6B7280', // Gray for inactive/secondary
+        },
+      },
+      fontFamily: {
+        montserrat: ['Montserrat_500Medium', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 };

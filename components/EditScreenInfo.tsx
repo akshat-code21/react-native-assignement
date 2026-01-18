@@ -19,11 +19,11 @@ export const EditScreenInfo = ({ path }: { path: string }) => {
 };
 
 const styles = {
-  codeHighlightContainer: `rounded-md px-1`,
+  codeHighlightContainer: `rounded-md px-1 bg-matiks-card`,
   getStartedContainer: `items-center mx-12`,
-  getStartedText: `text-lg leading-6 text-center`,
+  getStartedText: `text-lg leading-6 text-center text-matiks-text font-montserrat`,
   helpContainer: `items-center mx-5 mt-4`,
   helpLink: `py-4`,
-  helpLinkText: `text-center`,
+  helpLinkText: `text-center text-matiks-text font-montserrat`,
   homeScreenFilename: `my-2`,
 };

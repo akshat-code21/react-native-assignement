@@ -73,32 +73,32 @@ export const SearchScreen: React.FC = () => {
         if (hasSearched && results.length === 0) {
             return (
                 <View className="flex-1 items-center justify-center p-8">
-                    <Text className="text-lg text-gray-600">No users found</Text>
-                    <Text className="text-sm text-gray-400 mt-2">Try a different search term</Text>
+                    <Text className="text-lg text-matiks-text font-montserrat">No users found</Text>
+                    <Text className="text-sm text-matiks-muted mt-2 font-montserrat">Try a different search term</Text>
                 </View>
             );
         }
 
         return (
             <View className="flex-1 items-center justify-center p-8">
-                <Text className="text-lg text-gray-600">Search for users</Text>
-                <Text className="text-sm text-gray-400 mt-2">Enter a username to find their rank</Text>
+                <Text className="text-lg text-matiks-text font-montserrat">Search for users</Text>
+                <Text className="text-sm text-matiks-muted mt-2 font-montserrat">Enter a username to find their rank</Text>
             </View>
         );
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
-            <View className="bg-blue-600 px-4 py-4">
-                <Text className="text-2xl font-bold text-white">Search Users</Text>
+        <SafeAreaView className="flex-1 bg-matiks-bg">
+            <View className="bg-matiks-bg px-4 py-4 border-b border-matiks-card">
+                <Text className="text-2xl font-bold text-matiks-text font-montserrat">Search Users</Text>
             </View>
 
-            <View className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-                <View className="flex-row items-center bg-white rounded-lg border border-gray-300">
+            <View className="px-4 py-3 bg-matiks-bg border-b border-matiks-card">
+                <View className="flex-row items-center bg-matiks-card rounded-lg border border-matiks-muted/20">
                     <TextInput
-                        className="flex-1 px-4 py-3 text-base"
+                        className="flex-1 px-4 py-3 text-base text-matiks-text font-montserrat"
                         placeholder="Enter username..."
-                        placeholderTextColor="#9CA3AF"
+                        placeholderTextColor="#6B7280"
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                         autoCapitalize="none"
@@ -111,15 +111,15 @@ export const SearchScreen: React.FC = () => {
                             onPress={handleClearSearch}
                             className="px-4 py-3"
                         >
-                            <Text className="text-blue-600 font-semibold">Clear</Text>
+                            <Text className="text-matiks-text font-semibold font-montserrat">Clear</Text>
                         </TouchableOpacity>
                     )}
                 </View>
             </View>
 
             {results.length > 0 && (
-                <View className="px-4 py-2 bg-gray-50">
-                    <Text className="text-sm text-gray-600">
+                <View className="px-4 py-2 bg-matiks-bg">
+                    <Text className="text-sm text-matiks-muted font-montserrat">
                         Found {results.length} result{results.length !== 1 ? 's' : ''}
                     </Text>
                 </View>

@@ -6,22 +6,27 @@ import { Text } from 'react-native';
 import { LeaderboardScreen } from 'screens/LeaderboardScreen';
 import { SearchScreen } from 'screens/SearchScreen';
 import './global.css';
+import { useFonts } from '@expo-google-fonts/montserrat/useFonts';
+import { Montserrat_500Medium } from '@expo-google-fonts/montserrat/500Medium';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  let [fontsLoaded] = useFonts({
+    Montserrat_500Medium,
+  });
   return (
     <NavigationContainer>
       <StatusBar style="auto" />
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: '#3B82F6',
-          tabBarInactiveTintColor: '#9CA3AF',
+          tabBarActiveTintColor: '#A9F99E',
+          tabBarInactiveTintColor: '#6B7280',
           tabBarStyle: {
-            backgroundColor: '#FFFFFF',
+            backgroundColor: '#1E1E1E',
             borderTopWidth: 1,
-            borderTopColor: '#E5E7EB',
+            borderTopColor: '#2D2D2D',
           },
         }}
       >
@@ -30,9 +35,10 @@ export default function App() {
           component={LeaderboardScreen}
           options={{
             tabBarIcon: ({ color }) => (
-              <Text style={{ color, fontSize: 20 }}>🏆</Text>
+              <Text style={{ color, fontSize: 20, fontFamily: "Montserrat_500Medium" }}>🏆</Text>
             ),
             tabBarLabel: 'Leaderboard',
+            tabBarLabelStyle: { fontFamily: 'Montserrat_500Medium' }
           }}
         />
         <Tab.Screen
@@ -40,9 +46,10 @@ export default function App() {
           component={SearchScreen}
           options={{
             tabBarIcon: ({ color }) => (
-              <Text style={{ color, fontSize: 20 }}>🔍</Text>
+              <Text style={{ color, fontSize: 20, fontFamily: "Montserrat_500Medium" }}>🔍</Text>
             ),
             tabBarLabel: 'Search',
+            tabBarLabelStyle: { fontFamily: 'Montserrat_500Medium' }
           }}
         />
       </Tab.Navigator>

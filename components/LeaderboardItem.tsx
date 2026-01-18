@@ -10,22 +10,22 @@ interface LeaderboardItemProps {
 
 export const LeaderboardItem: React.FC<LeaderboardItemProps> = ({ item, index }) => {
     const getRankColor = (rank: number) => {
-        if (rank === 1) return 'bg-yellow-100';
-        if (rank === 2) return 'bg-gray-100';
-        if (rank === 3) return 'bg-orange-100';
-        return 'bg-white';
+        if (rank === 1) return 'text-yellow-400';
+        if (rank === 2) return 'text-gray-300';
+        if (rank === 3) return 'text-orange-400';
+        return 'text-matiks-muted';
     };
     return (
-        <View className={`flex-row items-center justify-between p-4 border-b border-gray-200 ${getRankColor(item.rank)}`}>
+        <View className="flex-row items-center justify-between p-4 border-b border-matiks-card bg-matiks-bg">
             <View className="flex-row items-center flex-1">
                 <View className="w-12 items-center">
-                    <Text className="text-lg font-bold text-gray-800">#{item.rank}</Text>
+                    <Text className={`text-lg font-bold font-montserrat ${getRankColor(item.rank)}`}>#{item.rank}</Text>
                 </View>
                 <View className="flex-1 ml-4">
-                    <Text className="text-base font-semibold text-gray-900">{item.username}</Text>
+                    <Text className="text-base font-semibold text-matiks-text font-montserrat">{item.username}</Text>
                 </View>
                 <View className="items-end">
-                    <Text className="text-base font-bold text-blue-600">{item.rating}</Text>
+                    <Text className="text-base font-bold text-matiks-text font-montserrat">{item.rating}</Text>
                 </View>
             </View>
         </View>

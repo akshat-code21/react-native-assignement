@@ -17,12 +17,10 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
 
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
 
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1E1E1E"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {

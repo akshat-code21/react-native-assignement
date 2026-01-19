@@ -7,9 +7,9 @@ interface LoadingSpinnerProps {
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ message = 'Loading...' }) => {
   return (
-    <View className="flex-1 items-center justify-center p-8 bg-matiks-bg">
+    <View className="flex-1 items-center justify-center bg-matiks-bg p-8">
       <ActivityIndicator size="large" color="#A9F99E" />
-      <Text className="mt-4 text-matiks-muted font-montserrat">{message}</Text>
+      <Text className="mt-4 font-montserrat text-matiks-muted">{message}</Text>
     </View>
   );
 };

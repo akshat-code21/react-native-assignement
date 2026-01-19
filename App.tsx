@@ -28,17 +28,16 @@ export default function App() {
             borderTopWidth: 1,
             borderTopColor: '#2D2D2D',
           },
-        }}
-      >
+        }}>
         <Tab.Screen
           name="Leaderboard"
           component={LeaderboardScreen}
           options={{
             tabBarIcon: ({ color }) => (
-              <Text style={{ color, fontSize: 20, fontFamily: "Montserrat_500Medium" }}>🏆</Text>
+              <Text style={{ color, fontSize: 20, fontFamily: 'Montserrat_500Medium' }}>🏆</Text>
             ),
             tabBarLabel: 'Leaderboard',
-            tabBarLabelStyle: { fontFamily: 'Montserrat_500Medium' }
+            tabBarLabelStyle: { fontFamily: 'Montserrat_500Medium' },
           }}
         />
         <Tab.Screen
@@ -46,10 +45,10 @@ export default function App() {
           component={SearchScreen}
           options={{
             tabBarIcon: ({ color }) => (
-              <Text style={{ color, fontSize: 20, fontFamily: "Montserrat_500Medium" }}>🔍</Text>
+              <Text style={{ color, fontSize: 20, fontFamily: 'Montserrat_500Medium' }}>🔍</Text>
             ),
             tabBarLabel: 'Search',
-            tabBarLabelStyle: { fontFamily: 'Montserrat_500Medium' }
+            tabBarLabelStyle: { fontFamily: 'Montserrat_500Medium' },
           }}
         />
       </Tab.Navigator>

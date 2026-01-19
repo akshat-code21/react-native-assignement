@@ -19,10 +19,11 @@ export const leaderboardApi = {
     });
     return response.data;
   },
-  searchUsers: async (query: string, limit: number): Promise<UserSearchResponse> => {
+  searchUsers: async (query: string, page: number, limit: number): Promise<UserSearchResponse> => {
     const response = await api.get(API_ENDPOINTS.SEARCH_USERS, {
       params: {
         q: query, // API expects 'q' not 'query'
+        page,
         limit,
       },
     });

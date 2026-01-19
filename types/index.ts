@@ -13,7 +13,9 @@ export interface LeaderboardResponse {
 
 export interface UserSearchResponse {
   users: LeaderboardEntry[];
-  count: number;
+  page: number;
+  limit: number;
+  total: number;
 }
 
 export interface UserRankResponse {

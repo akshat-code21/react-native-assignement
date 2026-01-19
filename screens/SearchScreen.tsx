@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, Keyboard } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableOpacity, Keyboard, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { leaderboardApi } from '../services/api';
 import { SearchResultItem } from '../components/SearchResultItem';
@@ -7,43 +7,77 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { LeaderboardEntry } from 'types';
 
 const DEBOUNCE_DELAY = 500; // milliseconds
+const ITEMS_PER_PAGE = 50;
 
 export const SearchScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [total, setTotal] = useState(0);
 
   // Debounce search
   useEffect(() => {
     if (searchQuery.trim().length === 0) {
       setResults([]);
       setHasSearched(false);
+      setPage(1);
+      setHasMore(false);
+      setTotal(0);
       return;
     }
 
     const timeoutId = setTimeout(() => {
-      performSearch(searchQuery.trim());
+      performSearch(searchQuery.trim(), 1, true);
     }, DEBOUNCE_DELAY);
 
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
 
-  const performSearch = async (query: string) => {
+  const performSearch = async (query: string, pageNum: number = 1, isNewSearch: boolean = false) => {
     if (query.length < 1) return;
 
-    setLoading(true);
-    setHasSearched(true);
+    if (isNewSearch) {
+      setLoading(true);
+      setHasSearched(true);
+      setPage(1);
+      setResults([]);
+      setLoadingMore(false);
+    } else {
+      // Loading more results
+      setLoadingMore(true);
+    }
 
     try {
-      const response = await leaderboardApi.searchUsers(query, 50);
-      setResults(response.users);
+      const response = await leaderboardApi.searchUsers(query, pageNum, ITEMS_PER_PAGE);
+      
+      if (isNewSearch || pageNum === 1) {
+        setResults(response.users);
+      } else {
+        setResults((prev) => [...prev, ...response.users]);
+      }
+      
+      setTotal(response.total);
+      setHasMore(response.users.length === ITEMS_PER_PAGE && response.users.length > 0);
+      setPage(pageNum);
     } catch (error) {
       console.error('Error searching users:', error);
-      setResults([]);
+      if (isNewSearch || pageNum === 1) {
+        setResults([]);
+      }
       // Handle error (show toast/alert)
     } finally {
       setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
+  const loadMore = () => {
+    if (!loading && !loadingMore && hasMore && searchQuery.trim().length > 0) {
+      performSearch(searchQuery.trim(), page + 1, false);
     }
   };
 
@@ -51,13 +85,34 @@ export const SearchScreen: React.FC = () => {
     setSearchQuery('');
     setResults([]);
     setHasSearched(false);
+    setPage(1);
+    setHasMore(false);
+    setTotal(0);
+    setLoading(false);
+    setLoadingMore(false);
     Keyboard.dismiss();
   };
 
   const renderItem = ({ item }: { item: LeaderboardEntry }) => <SearchResultItem item={item} />;
 
+  const renderFooter = () => {
+    if (!hasMore) return null;
+    // Show loading indicator when loading more results
+    if (loadingMore) {
+      return (
+        <View className="py-4 items-center">
+          <ActivityIndicator size="small" color="#A9F99E" />
+          <Text className="mt-2 font-montserrat text-sm text-matiks-muted">
+            Loading more users...
+          </Text>
+        </View>
+      );
+    }
+    return null;
+  };
+
   const renderEmpty = () => {
-    if (loading) {
+    if (loading && results.length === 0) {
       return <LoadingSpinner message="Searching..." />;
     }
 
@@ -99,7 +154,7 @@ export const SearchScreen: React.FC = () => {
             autoCapitalize="none"
             autoCorrect={false}
             returnKeyType="search"
-            onSubmitEditing={() => performSearch(searchQuery)}
+            onSubmitEditing={() => performSearch(searchQuery.trim(), 1, true)}
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={handleClearSearch} className="px-4 py-4">
@@ -112,7 +167,8 @@ export const SearchScreen: React.FC = () => {
       {results.length > 0 && (
         <View className="bg-matiks-bg px-4 py-2">
           <Text className="font-montserrat text-sm text-matiks-muted">
-            Found {results.length} result{results.length !== 1 ? 's' : ''}
+            Showing {results.length} of {total.toLocaleString()} result{total !== 1 ? 's' : ''}
+            {hasMore && ' (scroll for more)'}
           </Text>
         </View>
       )}
@@ -122,6 +178,9 @@ export const SearchScreen: React.FC = () => {
         renderItem={renderItem}
         keyExtractor={(item, index) => `${item.username}-${index}`}
         ListEmptyComponent={renderEmpty}
+        ListFooterComponent={renderFooter}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
       />
